@@ -1,0 +1,14 @@
+name: crystal-ai
+id: ari:cloud:compass:2261fd15-e484-47df-a3c1-3945f31f5015:component/e50c4fd7-4bca-45fe-87b2-62835b87da68/9466f984-84f2-4f31-b432-f7058ea83155
+description: The Crystal Programming Language
+configVersion: 1
+typeId: SERVICE
+fields:
+  tier: 4
+links: []
+relationships:
+  DEPENDS_ON: []
+labels:
+  - language:crystal
+  - source:github
+customFields: null
