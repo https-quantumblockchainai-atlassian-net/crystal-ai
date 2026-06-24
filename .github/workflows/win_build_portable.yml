@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Disable CRLF line ending substitution
         run: |
@@ -27,10 +27,10 @@ jobs:
           crystal: "1.11.2"
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Restore libraries
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             libs/pcre.lib
@@ -45,7 +45,7 @@ jobs:
           key: win-libs-${{ hashFiles('.github/workflows/win.yml', 'etc/win-ci/*.ps1') }}-msvc
           fail-on-cache-miss: true
       - name: Restore OpenSSL
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             libs/crypto.lib
@@ -54,7 +54,7 @@ jobs:
           key: win-openssl-libs-3.1.0-${{ hashFiles('etc/win-ci/build-openssl.ps1') }}-msvc
           fail-on-cache-miss: true
       - name: Restore DLLs
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             libs/pcre-dynamic.lib
@@ -78,7 +78,7 @@ jobs:
           key: win-dlls-${{ hashFiles('.github/workflows/win.yml', 'etc/win-ci/*.ps1') }}-msvc
           fail-on-cache-miss: true
       - name: Restore OpenSSL DLLs
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             libs/crypto-dynamic.lib
@@ -88,13 +88,13 @@ jobs:
           key: win-openssl-dlls-3.1.0-${{ hashFiles('etc/win-ci/build-openssl.ps1') }}-msvc
           fail-on-cache-miss: true
       - name: Restore LLVM
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: llvm
           key: llvm-libs-${{ inputs.llvm_version }}-msvc
           fail-on-cache-miss: true
       - name: Restore LLVM DLLs
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: |
             libs/llvm_VERSION
@@ -123,7 +123,7 @@ jobs:
           cp dlls/LLVM-C.dll .build/
 
       - name: Download shards release
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: crystal-lang/shards
           ref: v0.18.0
@@ -143,7 +143,7 @@ jobs:
           cp README.md crystal/
 
       - name: Upload Crystal binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.release && 'crystal-release' || 'crystal' }}
           path: crystal
