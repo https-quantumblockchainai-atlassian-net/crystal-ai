@@ -11,7 +11,7 @@ env:
 
 jobs:
   llvm_test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -29,11 +29,11 @@ jobs:
     name: "LLVM ${{ matrix.llvm_version }}"
     steps:
       - name: Checkout Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Cache LLVM
         id: cache-llvm
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./llvm
           key: llvm-${{ matrix.llvm_version }}
