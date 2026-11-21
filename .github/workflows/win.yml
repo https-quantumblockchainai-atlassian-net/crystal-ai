@@ -11,7 +11,7 @@ env:
 
 jobs:
   x86_64-windows-libs:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Disable CRLF line ending substitution
         run: |
@@ -21,11 +21,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Cache libraries
         id: cache-libs
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: | # openssl and llvm take much longer to build so they are cached separately
             libs/pcre.lib
@@ -68,7 +68,7 @@ jobs:
 
       - name: Cache OpenSSL
         id: cache-openssl
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             libs/crypto.lib
@@ -77,13 +77,13 @@ jobs:
           key: win-openssl-libs-3.1.0-${{ hashFiles('etc/win-ci/build-openssl.ps1') }}-msvc
       - name: Set up NASM
         if: steps.cache-openssl.outputs.cache-hit != 'true'
-        uses: ilammy/setup-nasm@13cbeb366c45c4379d3478cdcbadd8295feb5028 # v1.5.1
+        uses: ilammy/setup-nasm@72793074d3c8cdda771dba85f6deafe00623038b # v1.5.2
       - name: Build OpenSSL
         if: steps.cache-openssl.outputs.cache-hit != 'true'
         run: .\etc\win-ci\build-openssl.ps1 -BuildTree deps\openssl -Version 3.1.0
 
   x86_64-windows-dlls:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Disable CRLF line ending substitution
         run: |
@@ -93,11 +93,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Cache libraries
         id: cache-dlls
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: | # openssl and llvm take much longer to build so they are cached separately
             libs/pcre-dynamic.lib
@@ -149,7 +149,7 @@ jobs:
 
       - name: Cache OpenSSL
         id: cache-openssl-dlls
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             libs/crypto-dynamic.lib
@@ -159,20 +159,20 @@ jobs:
           key: win-openssl-dlls-3.1.0-${{ hashFiles('etc/win-ci/build-openssl.ps1') }}-msvc
       - name: Set up NASM
         if: steps.cache-openssl-dlls.outputs.cache-hit != 'true'
-        uses: ilammy/setup-nasm@13cbeb366c45c4379d3478cdcbadd8295feb5028 # v1.5.1
+        uses: ilammy/setup-nasm@72793074d3c8cdda771dba85f6deafe00623038b # v1.5.2
       - name: Build OpenSSL
         if: steps.cache-openssl-dlls.outputs.cache-hit != 'true'
         run: .\etc\win-ci\build-openssl.ps1 -BuildTree deps\openssl -Version 3.1.0 -Dynamic
 
   x86_64-windows-llvm-libs:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Enable Developer Command Prompt
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
       - name: Cache LLVM
         id: cache-llvm-libs
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: llvm
           key: llvm-libs-${{ env.CI_LLVM_VERSION }}-msvc
@@ -188,7 +188,7 @@ jobs:
           cmake "-DCMAKE_INSTALL_PREFIX=$(pwd)\..\llvm" -P cmake_install.cmake
 
   x86_64-windows-llvm-dlls:
-    runs-on: windows-2022
+    runs-on: windows-2025
     steps:
       - name: Disable CRLF line ending substitution
         run: |
@@ -198,11 +198,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Cache LLVM
         id: cache-llvm-dlls
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             libs/llvm_VERSION
@@ -221,7 +221,7 @@ jobs:
       llvm_version: "18.1.1"
 
   x86_64-windows-test:
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: [x86_64-windows]
     steps:
       - name: Disable CRLF line ending substitution
@@ -232,16 +232,16 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Download Crystal executable
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: crystal
           path: build
 
       - name: Restore LLVM
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: llvm
           key: llvm-libs-${{ env.CI_LLVM_VERSION }}-msvc
@@ -275,7 +275,7 @@ jobs:
 
   x86_64-windows-installer:
     if: github.repository_owner == 'crystal-lang' && (startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/ci/'))
-    runs-on: windows-2022
+    runs-on: windows-2025
     needs: [x86_64-windows-release]
     steps:
       - name: Disable CRLF line ending substitution
@@ -283,16 +283,16 @@ jobs:
           git config --global core.autocrlf false
 
       - name: Download Crystal source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Download Crystal executable
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: crystal-release
           path: etc/win-ci/portable
 
       - name: Restore LLVM
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: llvm
           key: llvm-libs-${{ env.CI_LLVM_VERSION }}-msvc
@@ -312,7 +312,7 @@ jobs:
           iscc.exe crystal.iss
 
       - name: Upload Crystal installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crystal-installer
           path: etc/win-ci/Output/crystal-setup.exe
